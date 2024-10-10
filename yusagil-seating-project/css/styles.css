@@ -1,0 +1,44 @@
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: white;
+    color: #000;
+}
+.controls {
+    margin-bottom: 50px;
+}
+.seating-chart {
+    display: flex;
+    gap: 10px;
+    max-width: 1000px;
+    flex-wrap: nowrap;
+}
+.seat {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 10px;
+}
+.empty {
+    background-color: #E0E0E0;
+    color: #000;
+}
+.male {
+    background-color: #4F9EF1;
+    color: #fff;
+}
+.female {
+    background-color: #F15F9E;
+    color: #fff;
+}
