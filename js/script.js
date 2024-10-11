@@ -86,6 +86,19 @@ function assignSeats(genderArray) {
         }
     }
 
+    // 2번과 3번 좌석 조정
+    if (totalGuests === 12) {
+        if (seats[1] === seats[2]) {
+            if (seats[1] === '남') {
+                seats[2] = '여';
+            } else {
+                seats[2] = '남';
+            }
+            // 3번 좌석을 변경했으므로 4번 좌석도 조정
+            seats[3] = seats[2] === '남' ? '여' : '남';
+        }
+    }
+
     // 12명 예약 시 배정 규칙
     if (totalGuests === 12 && genderArray.includes('남')) {
         seats[0] = '남';

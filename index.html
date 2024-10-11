@@ -3,21 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>바 테이블 좌석 배치</title>
-    <!-- CSS 파일 연결 -->
+    <title>유사길 좌석 배치도</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <div class="controls">
-        <label for="maleCount">남성 수:</label>
-        <input type="number" id="maleCount" min="0" max="12" value="3">
-        <label for="femaleCount">여성 수:</label>
-        <input type="number" id="femaleCount" min="0" max="12" value="5">
-        <button id="arrangeButton">자리 배치</button>
+    <div class="container">
+        <div class="input-container">
+            <div class="input-field">
+                <label for="maleCount">남성 수:</label>
+                <input type="number" id="maleCount" min="0" max="12" value="6">
+            </div>
+            <div class="input-field">
+                <label for="femaleCount">여성 수:</label>
+                <input type="number" id="femaleCount" min="0" max="12" value="6">
+            </div>
+            <button id="arrangeButton">자리 배치</button>
+        </div>
     </div>
-    <div class="seating-chart" id="seatingChart"></div>
-
-    <!-- JavaScript 파일 연결 -->
+    <div class="seating-container">
+        <div id="seatingChart" class="seating-chart"></div>
+    </div>
     <script src="js/script.js"></script>
 </body>
 </html>
