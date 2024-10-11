@@ -39,7 +39,7 @@ function createGenderArray(maleCount, femaleCount) {
             genderArray.push(i % 2 === 0 ? majorGender : minorGender);
         }
     } else {
-        // '남 - 여 - 남' 패턴으로 그룹 생성
+        // 소수 성별을 기준으로 그룹 생성
         let groupCount = Math.floor(minorCount);
         for (let i = 0; i < groupCount; i++) {
             genderArray.push(majorGender, minorGender, majorGender);
@@ -48,7 +48,13 @@ function createGenderArray(maleCount, femaleCount) {
         // 남은 다수 성별 배치
         let remainingMajor = majorCount - groupCount * 2;
         for (let i = 0; i < remainingMajor; i++) {
-            genderArray.push(majorGender);
+            if (i % 2 === 0) {
+                // 짝수 인덱스는 배열 앞에 추가
+                genderArray.unshift(majorGender);
+            } else {
+                // 홀수 인덱스는 배열 뒤에 추가
+                genderArray.push(majorGender);
+            }
         }
     }
 
