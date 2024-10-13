@@ -1,7 +1,7 @@
 // 순열을 만드는 함수
 function createPermutation(maleCount, femaleCount) {
-    const men = Array.from({length: maleCount}, (_, i) => `M${i+1}`);
-    const women = Array.from({length: femaleCount}, (_, i) => `F${i+1}`);
+    const men = participants.filter(p => p.gender === '남성').map(p => p.name);
+    const women = participants.filter(p => p.gender === '여성').map(p => p.name);
     let seating = [];
     const totalCount = maleCount + femaleCount;
 
@@ -99,15 +99,95 @@ function renderSeating(seating) {
     const seatingChart = document.querySelector('.seating-chart');
     seatingChart.innerHTML = '';
 
-    seating.forEach(seat => {
+    seating.forEach((name, index) => {
         const seatElement = document.createElement('div');
-        seatElement.className = `seat ${seat.startsWith('M') ? 'male' : 'female'}`;
-        seatElement.textContent = seat;
+        const participant = participants.find(p => p.name === name);
+        seatElement.className = `seat ${participant.gender === '남성' ? 'male' : 'female'}`;
+        
+        const seatNumber = document.createElement('div');
+        seatNumber.className = 'seat-number';
+        seatNumber.textContent = index + 1;
+        
+        const nameElement = document.createElement('div');
+        nameElement.textContent = name;
+        
+        seatElement.appendChild(seatNumber);
+        seatElement.appendChild(nameElement);
         seatingChart.appendChild(seatElement);
+    });
+
+    // 참가자 명단 테이블 숨기기
+    document.getElementById('participant-table').style.display = 'none';
+}
+
+let participants = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+    const registerButton = document.getElementById('register-participants');
+    const modal = document.getElementById('participant-modal');
+    const closeButton = document.querySelector('.close');
+    const submitButton = document.getElementById('submit-participants');
+
+    registerButton.addEventListener('click', () => {
+        modal.style.display = 'block';
+        // 참가자 명단 테이블 표시
+        document.getElementById('participant-table').style.display = 'block';
+    });
+
+    closeButton.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    submitButton.addEventListener('click', () => {
+        const data = document.getElementById('participant-data').value;
+        participants = parseParticipantData(data);
+        renderParticipantTable(participants);
+        updateGenderCounts(participants);
+        modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+});
+
+function parseParticipantData(data) {
+    return data.trim().split('\n').map(line => {
+        const [name, age, gender, ...rest] = line.split('\t');
+        return { name, gender };
     });
 }
 
-// 이벤트 리스너 설정
+function renderParticipantTable(participants) {
+    const tableContainer = document.getElementById('participant-table');
+    tableContainer.innerHTML = ''; // 기존 테이블 내용 삭제
+
+    const table = document.createElement('table');
+    table.innerHTML = `
+        <tr>
+            <th>이름</th>
+            <th>성별</th>
+        </tr>
+        ${participants.map(p => `
+            <tr>
+                <td>${p.name}</td>
+                <td>${p.gender}</td>
+            </tr>
+        `).join('')}
+    `;
+    tableContainer.appendChild(table);
+}
+
+function updateGenderCounts(participants) {
+    const maleCount = participants.filter(p => p.gender === '남성').length;
+    const femaleCount = participants.filter(p => p.gender === '여성').length;
+    document.getElementById('male-count').value = maleCount;
+    document.getElementById('female-count').value = femaleCount;
+}
+
+// 좌석 배치 버튼 이벤트 리스너
 document.getElementById('arrange-seats').addEventListener('click', () => {
     const maleCount = parseInt(document.getElementById('male-count').value);
     const femaleCount = parseInt(document.getElementById('female-count').value);

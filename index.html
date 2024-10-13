@@ -7,15 +7,28 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <div class="register-container">
+        <button id="register-participants">참여자 등록</button>
+    </div>
     <div class="container">
-        <div class="input-container">
-            <div class="input-field">
-                <label for="male-count">남성 수:</label>
-                <input type="number" id="male-count" min="0">
+        <div id="participant-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <textarea id="participant-data" rows="10" cols="50" placeholder="여기에 참여자 데이터를 붙여넣으세요."></textarea>
+                <button id="submit-participants">제출</button>
             </div>
-            <div class="input-field">
-                <label for="female-count">여성 수:</label>
-                <input type="number" id="female-count" min="0">
+        </div>
+        <div id="participant-table"></div>
+        <div class="input-container">
+            <div class="input-row">
+                <div class="input-field">
+                    <label for="male-count">남성 수:</label>
+                    <input type="number" id="male-count" min="0" readonly>
+                </div>
+                <div class="input-field">
+                    <label for="female-count">여성 수:</label>
+                    <input type="number" id="female-count" min="0" readonly>
+                </div>
             </div>
             <button id="arrange-seats">좌석 배치</button>
         </div>

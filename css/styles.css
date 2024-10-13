@@ -19,25 +19,51 @@ body {
 }
 
 .seating-container {
-    margin-top: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
 .input-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto 20px;
+    padding: 20px; /* 패딩 증가 */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.input-row {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    margin-bottom: 20px; /* 마진 증가 */
 }
 
 .input-field {
-    width: 100%;
-    margin-bottom: 20px;
-    text-align: left;
+    flex: 1;
+    margin-right: 20px; /* 마진 증가 */
 }
 
-label {
+.input-field:last-child {
+    margin-right: 0;
+}
+
+.input-field label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 10px; /* 마진 증가 */
     font-weight: bold;
+}
+
+.input-field input {
+    width: 100%;
+    padding: 12px; /* 패딩 증가 */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
 }
 
 input[type="number"] {
@@ -68,19 +94,22 @@ button:hover {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;
-    padding-top: 20px;
+    gap: 5px;
 }
 
 .seat {
-    width: calc(25% - 10px);
+    width: calc(8.33% - 5px); /* 12개의 좌석이 한 줄에 들어가도록 조정 */
     aspect-ratio: 1;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-size: 18px;
+    font-size: 8px; /* 폰트 크기 더 축소 */
     border-radius: 5px;
     color: white;
+    padding: 2px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    text-align: center; /* 텍스트 중앙 정렬 */
 }
 
 .male {
@@ -94,6 +123,20 @@ button:hover {
 .empty {
     background-color: #cccccc;
     color: #666666;
+}
+
+.seat-number {
+    font-weight: bold;
+    font-size: 10px;
+    margin-bottom: 2px;
+}
+
+.seat-name {
+    font-size: 12px; /* 좌석 번호보다 약간 더 큰 크기 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
 }
 
 @media (min-width: 768px) {
@@ -115,5 +158,164 @@ button:hover {
     .seat {
         width: calc(8.33% - 10px);
         font-size: 22px;
+    }
+}
+
+.seat.smaller-font {
+    font-size: 10px; /* 4px 줄어든 폰트 크기 */
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#participant-table {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#participant-table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#participant-table th, #participant-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#participant-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.register-container {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #f0f0f0;
+}
+
+#register-participants {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#register-participants:hover {
+    background-color: #45a049;
+}
+
+/* 반응형 디자인 조정 */
+@media (max-width: 768px) {
+    .seat {
+        width: calc(16.66% - 10px); /* 모바일에서는 6개의 좌석이 한 줄에 들어가도록 */
+        font-size: 8px;
+    }
+    .seat-number {
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .seat {
+        width: calc(25% - 10px); /* 작은 모바일에서는 4개의 좌석이 한 줄에 들어가도록 */
+        font-size: 8px;
+    }
+    .seat-number {
+        font-size: 9px;
+    }
+    .seat-name {
+        font-size: 10px;
+    }
+}
+
+#arrange-seats {
+    width: 100%;
+    padding: 12px; /* 패딩 증가 */
+    margin-top: 20px; /* 상단 마진 추가 */
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#arrange-seats:hover {
+    background-color: #45a049;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 480px) {
+    .input-row {
+        flex-direction: column;
+    }
+    
+    .input-field {
+        margin-right: 0;
+        margin-bottom: 20px; /* 마진 증가 */
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .seat {
+        width: calc(16.66% - 10px);
+        font-size: 10px;
+    }
+    .seat-number {
+        font-size: 11px;
+    }
+    .seat-name {
+        font-size: 12px;
+    }
+}
+
+@media (min-width: 769px) {
+    .seat {
+        width: calc(8.33% - 10px);
+        font-size: 12px;
+    }
+    .seat-number {
+        font-size: 13px;
+    }
+    .seat-name {
+        font-size: 14px;
     }
 }
