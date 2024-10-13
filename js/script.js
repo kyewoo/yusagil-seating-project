@@ -1,134 +1,119 @@
-function createSeatingChart() {
-    const maleCount = parseInt(document.getElementById('maleCount').value);
-    const femaleCount = parseInt(document.getElementById('femaleCount').value);
-    const totalGuests = maleCount + femaleCount;
-    
-    if (totalGuests > 12 || totalGuests < 6) {
-        alert('총 인원은 6명 이상 12명 이하여야 합니다.');
-        return;
+// 순열을 만드는 함수
+function createPermutation(maleCount, femaleCount) {
+    const men = Array.from({length: maleCount}, (_, i) => `M${i+1}`);
+    const women = Array.from({length: femaleCount}, (_, i) => `F${i+1}`);
+    let seating = [];
+    const totalCount = maleCount + femaleCount;
+
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
     }
 
-    const seatingChart = document.getElementById('seatingChart');
-    seatingChart.innerHTML = '';
-    
-    // 1. 남성 수, 여성 수를 고려하여 배열 생성
-    let genderArray = createGenderArray(maleCount, femaleCount);
-    
-    // 2. 생성된 배열의 길이를 고려하여 empty 좌석 설정 이후 좌석 배정
-    let seats = assignSeats(genderArray);
-
-    // 좌석 렌더링
-    renderSeats(seats);
-}
-
-function createGenderArray(maleCount, femaleCount) {
-    // 성별 배열 초기화
-    let genderArray = [];
-    const totalCount = maleCount + femaleCount;
-    
-    // 다수 성별과 소수 성별 결정
-    const majorGender = maleCount > femaleCount ? '남' : '여';
-    const minorGender = maleCount > femaleCount ? '여' : '남';
-    const majorCount = Math.max(maleCount, femaleCount);
-    const minorCount = Math.min(maleCount, femaleCount);
-
-    // 다수 성별이 소수 성별의 2배 미만인 경우
-    if (majorCount < minorCount * 2) {
-        // 번갈아가며 성별 배치
-        for (let i = 0; i < totalCount; i++) {
-            genderArray.push(i % 2 === 0 ? majorGender : minorGender);
+    if (maleCount === femaleCount) {
+        shuffle(men);
+        shuffle(women);
+        if (totalCount === 12) {
+            seating.push(men[0]);
+            for (let i = 0; i < maleCount - 1; i++) {
+                seating.push(women[i], men[i + 1]);
+            }
+            seating.push(women[maleCount - 1]);
+        } else {
+            const startWithMale = Math.random() < 0.5;
+            for (let i = 0; i < maleCount; i++) {
+                if (startWithMale) {
+                    seating.push(men[i], women[i]);
+                } else {
+                    seating.push(women[i], men[i]);
+                }
+            }
         }
     } else {
-        // 소수 성별을 기준으로 그룹 생성
-        let groupCount = Math.floor(minorCount);
-        for (let i = 0; i < groupCount; i++) {
-            genderArray.push(majorGender, minorGender, majorGender);
-        }
-        
-        // 남은 다수 성별 배치
-        let remainingMajor = majorCount - groupCount * 2;
-        for (let i = 0; i < remainingMajor; i++) {
-            if (i % 2 === 0) {
-                // 짝수 인덱스는 배열 앞에 추가
-                genderArray.unshift(majorGender);
-            } else {
-                // 홀수 인덱스는 배열 뒤에 추가
-                genderArray.push(majorGender);
-            }
-        }
-    }
-
-    // 완성된 성별 배열 반환
-    return genderArray;
-}
-
-function assignSeats(genderArray) {
-    const totalSeats = 12;
-    const totalGuests = genderArray.length;
-    const startIndex = Math.floor((totalSeats - totalGuests) / 2);
-    const endIndex = startIndex + totalGuests;
-
-    let seats = new Array(totalSeats).fill('empty');
-
-    // 좌석 배정
-    for (let i = startIndex, j = 0; i < endIndex; i++, j++) {
-        seats[i] = genderArray[j];
-    }
-
-    // 5번과 6번 좌석 조정
-    if (endIndex > startIndex + 5) {
-        if (seats[startIndex + 4] === seats[startIndex + 5]) {
-            if (seats[startIndex + 4] === '남') {
-                seats[startIndex + 5] = '여';
-            } else {
-                seats[startIndex + 5] = '남';
-            }
-        }
-    }
-
-    // 2번과 3번 좌석 조정
-    if (totalGuests === 12) {
-        if (seats[1] === seats[2]) {
-            if (seats[1] === '남') {
-                seats[2] = '여';
-            } else {
-                seats[2] = '남';
-            }
-            // 3번 좌석을 변경했으므로 4번 좌석도 조정
-            seats[3] = seats[2] === '남' ? '여' : '남';
-        }
-    }
-
-    // 12명 예약 시 배정 규칙
-    if (totalGuests === 12 && genderArray.includes('남')) {
-        seats[0] = '남';
-        // 첫 번째 자리를 남성으로 바꾸었으므로, 다른 자리 하나를 조정
-        for (let i = 1; i < totalSeats; i++) {
-            if (seats[i] === '남') {
-                seats[i] = '여';
-                break;
-            }
-        }
-    }
-
-    return seats;
-}
-
-function renderSeats(seats) {
-    const seatingChart = document.getElementById('seatingChart');
-    seats.forEach((gender, index) => {
-        const seat = document.createElement('div');
-        seat.classList.add('seat');
-        if (gender === 'empty') {
-            seat.innerHTML = `${index + 1}`;
-            seat.classList.add('empty');
+        let minority, majority;
+        if (maleCount < femaleCount) {
+            minority = men;
+            majority = women;
         } else {
-            seat.innerHTML = `${index + 1}<br>${gender}`;
-            seat.classList.add(gender === '남' ? 'male' : 'female');
+            minority = women;
+            majority = men;
         }
-        seatingChart.appendChild(seat);
+
+        // 1. 소수 성별 배치 (랜덤)
+        shuffle(minority);
+        seating = [...minority];
+
+        // 2. 다수 성별 사이사이에 1차 배치 (랜덤)
+        shuffle(majority);
+        for (let i = 0; i <= seating.length; i += 2) {
+            if (majority.length > 0) {
+                seating.splice(i, 0, majority.pop());
+            }
+        }
+
+        // 3. 남은 다수 성별을 소수 성별 사이에 추가 배치 (랜덤)
+        const remainingMajority = [...majority];
+        majority = [];
+        while (remainingMajority.length > 0) {
+            const availablePositions = [];
+            for (let i = 1; i < seating.length - 1; i += 2) {
+                if (seating[i-1].charAt(0) === seating[i+1].charAt(0)) {
+                    availablePositions.push(i);
+                }
+            }
+            if (availablePositions.length === 0) break;
+            const randomPosition = availablePositions[Math.floor(Math.random() * availablePositions.length)];
+            seating.splice(randomPosition, 0, remainingMajority.pop());
+        }
+
+        // 4. 남은 다수 성별을 앞과 뒤에 순차적으로 배치
+        shuffle(remainingMajority); // 남은 다수 성별을 랜덤하게 섞음
+        let frontInsert = Math.random() < 0.5; // 앞에서 시작할지 뒤에서 시작할지 랜덤 결정
+        while (remainingMajority.length > 0) {
+            if (frontInsert) {
+                seating.unshift(remainingMajority.pop());
+            } else {
+                seating.push(remainingMajority.pop());
+            }
+            frontInsert = !frontInsert;
+        }
+    }
+
+    return seating;
+}
+
+// 순열을 배치하는 함수
+function arrangeSeats(maleCount, femaleCount) {
+    const totalCount = maleCount + femaleCount;
+    if (totalCount < 6 || totalCount > 12) {
+        alert('총 인원수는 6명에서 12명 사이여야 합니다.');
+        return null;
+    }
+    return createPermutation(maleCount, femaleCount);
+}
+
+// 배치된 순열을 렌더링하는 함수
+function renderSeating(seating) {
+    const seatingChart = document.querySelector('.seating-chart');
+    seatingChart.innerHTML = '';
+
+    seating.forEach(seat => {
+        const seatElement = document.createElement('div');
+        seatElement.className = `seat ${seat.startsWith('M') ? 'male' : 'female'}`;
+        seatElement.textContent = seat;
+        seatingChart.appendChild(seatElement);
     });
 }
 
-document.getElementById('arrangeButton').addEventListener('click', createSeatingChart);
-document.addEventListener('DOMContentLoaded', createSeatingChart);
+// 이벤트 리스너 설정
+document.getElementById('arrange-seats').addEventListener('click', () => {
+    const maleCount = parseInt(document.getElementById('male-count').value);
+    const femaleCount = parseInt(document.getElementById('female-count').value);
+
+    const seating = arrangeSeats(maleCount, femaleCount);
+    if (seating) {
+        renderSeating(seating);
+    }
+});
